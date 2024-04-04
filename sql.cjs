@@ -506,7 +506,7 @@ app.post("/meteo/auth/login/check", (req, res) => {
   connection.query(sql, [username, md5(password)], (err, results) => {
     if (err) throw err;
     if (results.length > 0) {
-      const token = jwt.sign({ username: username }, "meteo2023", {
+      const token = jwt.sign({ username: username }, process.env.jwtMeteo, {
         expiresIn: "30m",
       });
       res.json({ token: token });
@@ -518,7 +518,7 @@ app.post("/meteo/auth/login/check", (req, res) => {
 app.get("/meteo/auth/admin/check", (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   console.log(token);
-  jwt.verify(token, "meteo2023", (err, decodedToken) => {
+  jwt.verify(token, process.env.jwtMeteo, (err, decodedToken) => {
     if (err) {
       return res.status(401).json({ message: "Token inv�lido" });
     } else {
